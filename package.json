@@ -1,6 +1,6 @@
 {
   "name": "opinionated-prisma",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "description": "Opinionated Prisma ORM + PostgreSQL patterns for AI coding assistants",
   "main": ".opencode/plugins/opinionated-prisma.js",

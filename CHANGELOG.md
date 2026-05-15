@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.1] - 2026-05-15
+
+### Fixed
+
+- Remove duplicate `hooks` declaration from Claude Code plugin manifest that caused a load error
+
 ## [1.0.0] - 2026-05-15
 
 ### Added
