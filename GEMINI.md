@@ -1,1 +1,1 @@
-@./skills/prisma-postgres/SKILL.md
+@./skills/opinionated-prisma/SKILL.md

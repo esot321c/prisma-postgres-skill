@@ -39,7 +39,7 @@ description: >
 
 ```
 skills/
-  prisma-postgres/     # Overview, prerequisites, skill routing
+  opinionated-prisma/     # Overview, prerequisites, skill routing
   schema-design/       # Naming, IDs, enums, soft delete
   indexing/            # Index types, Prisma gaps, N+1
   migration-safety/    # Safe migration workflows
@@ -47,4 +47,4 @@ skills/
   raw-sql-boundary/    # When to use $queryRaw
 ```
 
-Each skill is independently invocable. The `prisma-postgres` skill serves as the entry point that routes to the appropriate sub-skill.
+Each skill is independently invocable. The `opinionated-prisma` skill serves as the entry point that routes to the appropriate sub-skill.

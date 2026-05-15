@@ -1,5 +1,5 @@
 ---
-name: prisma-postgres
+name: opinionated-prisma
 description: >
   Overview and prerequisites for Prisma ORM + PostgreSQL patterns.
   Use when first setting up a database, establishing ID strategy, or needing

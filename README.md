@@ -1,4 +1,4 @@
-# prisma-postgres-skill
+# Opinionated Prisma Skills
 
 An opinionated AI coding skill plugin for building with Prisma ORM on self-hosted PostgreSQL.
 
@@ -18,7 +18,7 @@ You don't invoke skills manually. Ask your agent to "add a users table" and the 
 
 ### Skills
 
-- **prisma-postgres** — Entry point. Establishes UUID v7 prerequisites, checks for existing schema and Docker setup, routes to the appropriate skill for the task at hand.
+- **opinionated-prisma** — Entry point. Establishes UUID v7 prerequisites, checks for existing schema and Docker setup, routes to the appropriate skill for the task at hand.
 
 - **schema-design** — Activates when designing models or adding fields. Enforces snake_case mapping via `@@map`/`@map`, UUID v7 primary keys, `@@index` on every foreign key, string fields over database enums, separate slug fields for URLs, and soft delete via `deletedAt`.
 
@@ -39,13 +39,13 @@ Installation differs by platform. If you use more than one, install separately f
 Register the marketplace:
 
 ```
-/plugin marketplace add esot321c/prisma-postgres-skill
+/plugin marketplace add esot321c/opinionated-prisma
 ```
 
 Install the plugin:
 
 ```
-/plugin install prisma-postgres@prisma-postgres-skill
+/plugin install opinionated-prisma@opinionated-prisma
 ```
 
 ### Codex CLI
@@ -56,20 +56,20 @@ Open the plugin search interface:
 /plugins
 ```
 
-Search for `prisma-postgres` and select Install Plugin.
+Search for `opinionated-prisma` and select Install Plugin.
 
 ### Gemini CLI
 
 Install the extension:
 
 ```
-gemini extensions install https://github.com/esot321c/prisma-postgres-skill
+gemini extensions install https://github.com/esot321c/opinionated-prisma
 ```
 
 Update later:
 
 ```
-gemini extensions update prisma-postgres
+gemini extensions update opinionated-prisma
 ```
 
 ### Cursor
@@ -77,17 +77,17 @@ gemini extensions update prisma-postgres
 In Cursor Agent chat:
 
 ```
-/add-plugin prisma-postgres
+/add-plugin opinionated-prisma
 ```
 
-Or search for "prisma-postgres" in the plugin marketplace.
+Or search for "opinionated-prisma" in the plugin marketplace.
 
 ### OpenCode
 
 Tell OpenCode:
 
 ```
-Fetch and follow instructions from https://raw.githubusercontent.com/esot321c/prisma-postgres-skill/refs/heads/main/.opencode/INSTALL.md
+Fetch and follow instructions from https://raw.githubusercontent.com/esot321c/opinionated-prisma/refs/heads/main/.opencode/INSTALL.md
 ```
 
 ### Manual (Any Platform)
@@ -95,7 +95,7 @@ Fetch and follow instructions from https://raw.githubusercontent.com/esot321c/pr
 Clone into your skills directory:
 
 ```bash
-git clone https://github.com/esot321c/prisma-postgres-skill.git ~/.claude/skills/prisma-postgres-skill
+git clone https://github.com/esot321c/opinionated-prisma.git ~/.claude/skills/opinionated-prisma
 ```
 
 ### Project-Level
@@ -103,12 +103,12 @@ git clone https://github.com/esot321c/prisma-postgres-skill.git ~/.claude/skills
 Add to a specific project:
 
 ```bash
-git clone https://github.com/esot321c/prisma-postgres-skill.git .claude/skills/prisma-postgres-skill
+git clone https://github.com/esot321c/opinionated-prisma.git .claude/skills/opinionated-prisma
 ```
 
 ## Prerequisites
 
-Self-hosted PostgreSQL with the `pg_uuidv7` extension. See the `prisma-postgres` skill for setup instructions including Docker Compose configuration.
+Self-hosted PostgreSQL with the `pg_uuidv7` extension. See the `opinionated-prisma` skill for setup instructions including Docker Compose configuration.
 
 ## Opinions
 
@@ -130,8 +130,8 @@ If any of these don't fit your project, fork and adjust. PRs to make decisions c
 
 Plugin updates are generally automatic depending on your platform. To manually update:
 
-- **Claude Code**: `/plugin update prisma-postgres`
-- **Gemini CLI**: `gemini extensions update prisma-postgres`
+- **Claude Code**: `/plugin update opinionated-prisma`
+- **Gemini CLI**: `gemini extensions update opinionated-prisma`
 - **Manual installs**: `git pull` in the cloned directory
 
 ## Contributing

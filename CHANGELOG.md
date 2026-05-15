@@ -12,7 +12,7 @@ All notable changes to this project will be documented in this file.
 - **migration-safety** skill: safe `prisma migrate` workflows, concurrent index creation, constraint validation
 - **transactions** skill: interactive vs sequential transactions, bulk create/upsert/update patterns
 - **raw-sql-boundary** skill: decision logic for `$queryRaw` vs Prisma query API
-- **prisma-postgres** skill: overview, prerequisites, UUID v7 setup, skill routing
+- **opinionated-prisma** skill: overview, prerequisites, UUID v7 setup, skill routing
 - Cross-platform session hooks (Windows + Unix)
 - Marketplace metadata for plugin installation
 - Per-platform installation commands (CLI syntax for Claude Code, Codex, Cursor, Gemini CLI, OpenCode)

@@ -1,4 +1,4 @@
-# prisma-postgres-skill
+# opinionated-prisma
 
 This is an AI coding skill plugin. It contains no application code — only markdown skill files and platform manifests.
 
@@ -6,7 +6,7 @@ This is an AI coding skill plugin. It contains no application code — only mark
 
 ```
 skills/                  # Each subdirectory is an independent skill
-  prisma-postgres/       # Overview, prerequisites, skill routing
+  opinionated-prisma/    # Overview, prerequisites, skill routing
   schema-design/         # Naming, IDs, enums, soft delete
   indexing/              # Index types, Prisma gaps, N+1
   migration-safety/      # Safe migration workflows
@@ -30,7 +30,7 @@ hooks/                   # Cross-platform session bootstrap hooks
 ## When adding a new skill
 
 1. Create `skills/<skill-name>/SKILL.md` with frontmatter.
-2. Update the routing table in `skills/prisma-postgres/SKILL.md`.
+2. Update the routing table in `skills/opinionated-prisma/SKILL.md`.
 3. Bump version in `package.json`, `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`, `.codex-plugin/plugin.json`, `.cursor-plugin/plugin.json`, and `gemini-extension.json`.
 4. Add an entry to `CHANGELOG.md`.
 

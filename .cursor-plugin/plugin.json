@@ -1,14 +1,14 @@
 {
-  "name": "prisma-postgres",
-  "displayName": "Prisma + PostgreSQL",
+  "name": "opinionated-prisma",
+  "displayName": "Opinionated Prisma Skills",
   "description": "Opinionated Prisma ORM + PostgreSQL patterns: schema design, indexing, migrations, transactions, and raw SQL escape hatches",
   "version": "1.0.0",
   "author": {
     "name": "Morley Media Group",
     "email": "djgrahammorley@gmail.com"
   },
-  "homepage": "https://github.com/esot321c/prisma-postgres-skill",
-  "repository": "https://github.com/esot321c/prisma-postgres-skill",
+  "homepage": "https://github.com/esot321c/opinionated-prisma",
+  "repository": "https://github.com/esot321c/opinionated-prisma",
   "license": "MIT",
   "keywords": [
     "prisma",

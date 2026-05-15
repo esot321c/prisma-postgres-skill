@@ -1,14 +1,14 @@
 {
-  "name": "prisma-postgres-skill",
+  "name": "opinionated-prisma",
   "version": "1.0.0",
   "type": "module",
   "description": "Opinionated Prisma ORM + PostgreSQL patterns for AI coding assistants",
-  "main": ".opencode/plugins/prisma-postgres.js",
+  "main": ".opencode/plugins/opinionated-prisma.js",
   "author": "Morley Media Group <djgrahammorley@gmail.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/esot321c/prisma-postgres-skill.git"
+    "url": "https://github.com/esot321c/opinionated-prisma.git"
   },
   "keywords": [
     "prisma",

@@ -1,8 +1,8 @@
 /**
- * Prisma + PostgreSQL plugin for OpenCode.ai
+ * Opinionated Prisma Skills plugin for OpenCode.ai
  *
  * Auto-registers skills directory via config hook.
- * Injects awareness of prisma-postgres skill at session start.
+ * Injects awareness of opinionated-prisma skill at session start.
  */
 
 import path from 'path';
@@ -33,13 +33,13 @@ const extractAndStripFrontmatter = (content) => {
 
 let _bootstrapCache = undefined;
 
-export const PrismaPostgresPlugin = async ({ client, directory }) => {
+export const OpinionatedPrismaPlugin = async ({ client, directory }) => {
   const skillsDir = path.resolve(__dirname, '../../skills');
 
   const getBootstrapContent = () => {
     if (_bootstrapCache !== undefined) return _bootstrapCache;
 
-    const skillPath = path.join(skillsDir, 'prisma-postgres', 'SKILL.md');
+    const skillPath = path.join(skillsDir, 'opinionated-prisma', 'SKILL.md');
     if (!fs.existsSync(skillPath)) {
       _bootstrapCache = null;
       return null;
@@ -53,7 +53,7 @@ When this skill references tools you don't have, substitute OpenCode equivalents
 - \`Skill\` tool → OpenCode's native \`skill\` tool
 - \`Read\`, \`Write\`, \`Edit\`, \`Bash\` → Your native tools`;
 
-    _bootstrapCache = `The prisma-postgres-skill plugin is installed. When working with Prisma ORM or PostgreSQL, use the 'prisma-postgres' skill for opinionated patterns and best practices.
+    _bootstrapCache = `The opinionated-prisma plugin is installed. When working with Prisma ORM or PostgreSQL, use the 'opinionated-prisma' skill for opinionated patterns and best practices.
 
 Trigger keywords: prisma, schema, migrate, index, query, $queryRaw, transaction, bulk, database, model, relation.
 
@@ -77,7 +77,7 @@ ${toolMapping}`;
       const firstUser = output.messages.find(m => m.info.role === 'user');
       if (!firstUser || !firstUser.parts.length) return;
 
-      if (firstUser.parts.some(p => p.type === 'text' && p.text.includes('prisma-postgres-skill'))) return;
+      if (firstUser.parts.some(p => p.type === 'text' && p.text.includes('opinionated-prisma'))) return;
 
       const ref = firstUser.parts[0];
       firstUser.parts.unshift({ ...ref, type: 'text', text: bootstrap });
