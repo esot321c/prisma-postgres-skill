@@ -1,0 +1,26 @@
+{
+  "name": "prisma-postgres-skill",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Opinionated Prisma ORM + PostgreSQL patterns for AI coding assistants",
+  "main": ".opencode/plugins/prisma-postgres.js",
+  "author": "Morley Media Group <djgrahammorley@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/esot321c/prisma-postgres-skill.git"
+  },
+  "keywords": [
+    "prisma",
+    "postgresql",
+    "claude-code",
+    "claude-code-plugin",
+    "cursor",
+    "codex",
+    "ai-skill",
+    "database",
+    "orm",
+    "schema-design",
+    "migrations"
+  ]
+}

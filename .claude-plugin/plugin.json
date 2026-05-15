@@ -1,0 +1,43 @@
+{
+  "name": "prisma-postgres",
+  "version": "1.0.0",
+  "description": "Opinionated Prisma ORM + PostgreSQL patterns: schema design, indexing, migrations, transactions, and raw SQL escape hatches",
+  "author": {
+    "name": "Morley Media Group",
+    "email": "djgrahammorley@gmail.com",
+    "url": "https://github.com/esot321c"
+  },
+  "homepage": "https://github.com/esot321c/prisma-postgres-skill",
+  "repository": "https://github.com/esot321c/prisma-postgres-skill",
+  "license": "MIT",
+  "keywords": [
+    "prisma",
+    "postgresql",
+    "database",
+    "schema",
+    "migrations",
+    "indexing",
+    "transactions",
+    "raw-sql",
+    "orm"
+  ],
+  "skills": "./skills/",
+  "hooks": "./hooks/hooks.json",
+  "interface": {
+    "displayName": "Prisma + PostgreSQL",
+    "shortDescription": "Schema design, indexing, migrations, transactions, and raw SQL patterns for Prisma on PostgreSQL",
+    "longDescription": "Opinionated skill for building with Prisma ORM on self-hosted PostgreSQL. Covers UUID v7 primary keys, snake_case mapping, foreign key indexing, partial/expression indexes via custom migrations, safe migration workflows, transaction patterns, bulk operations, and the decision boundary for when to use $queryRaw.",
+    "developerName": "Morley Media Group",
+    "category": "Coding",
+    "capabilities": [
+      "Interactive",
+      "Read"
+    ],
+    "defaultPrompt": [
+      "Help me design a Prisma schema for my project.",
+      "I need to add a migration safely to a large table.",
+      "How should I handle bulk upserts with Prisma?"
+    ],
+    "websiteURL": "https://github.com/esot321c/prisma-postgres-skill"
+  }
+}

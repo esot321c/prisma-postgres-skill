@@ -1,3 +1,12 @@
+---
+name: schema-design
+description: >
+  Prisma schema design conventions: naming, primary keys, enums, relations, soft delete.
+  Use when designing models, adding fields, choosing between enums and strings, or
+  setting up a new Prisma schema. Triggers on "schema", "model", "relation", "enum",
+  "field", "prisma.schema", "@@map", "@map", "uuid", "slug".
+---
+
 # Schema Design Conventions
 
 ## Rules
@@ -23,7 +32,7 @@ Use string fields when:
 - Categories the client might rename or extend.
 - Any value where adding an option shouldn't require a deploy.
 
-## ✅ Correct
+## Correct
 
 ```prisma
 model Client {
@@ -54,7 +63,7 @@ model Matter {
 }
 ```
 
-## ❌ Incorrect
+## Incorrect
 
 ```prisma
 model matter {
@@ -67,7 +76,7 @@ model matter {
   // no @@map, no @@index on FK, no updatedAt, uuid v4
 }
 
-// ❌ Database enum for values that will change with business requirements
+// Database enum for values that will change with business requirements
 enum MatterStatus {
   OPEN
   CLOSED

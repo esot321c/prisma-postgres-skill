@@ -1,3 +1,13 @@
+---
+name: raw-sql-boundary
+description: >
+  Decision logic for when to use $queryRaw vs Prisma's query API. Use when deciding
+  whether raw SQL is warranted, writing window functions, CTEs, full-text search,
+  JSONB operators, or complex aggregations. Triggers on "$queryRaw", "raw sql",
+  "window function", "CTE", "full-text search", "JSONB", "ROW_NUMBER", "RANK",
+  "Prisma.sql", "EXPLAIN ANALYZE".
+---
+
 # Raw SQL Boundary
 
 ## Decision Rule
@@ -32,10 +42,10 @@ If you find yourself writing raw SQL for basic CRUD, the problem is probably a m
 ### Always Type the Return
 
 ```typescript
-// ❌ Untyped
+// WRONG: Untyped
 const results = await prisma.$queryRaw`SELECT * FROM matters`;
 
-// ✅ Typed
+// CORRECT: Typed
 interface MatterWithRank {
   id: string;
   title: string;
@@ -66,12 +76,12 @@ Don't scatter raw SQL across services. Keep it next to the Prisma operations it 
 ### Use Prisma.sql for Parameterization
 
 ```typescript
-// ❌ String interpolation (SQL injection risk)
+// WRONG: String interpolation (SQL injection risk)
 const results = await prisma.$queryRaw`
   SELECT * FROM matters WHERE client_id = '${clientId}'
 `;
 
-// ✅ Parameterized
+// CORRECT: Parameterized
 const results = await prisma.$queryRaw<Matter[]>`
   SELECT * FROM matters WHERE client_id = ${clientId}::uuid
 `;
@@ -79,7 +89,7 @@ const results = await prisma.$queryRaw<Matter[]>`
 
 Prisma's tagged template literal handles parameterization automatically. Do not use string concatenation or template literals outside the `$queryRaw` tag.
 
-## ✅ Correct: CTE for Matter Hierarchy
+## Correct: CTE for Matter Hierarchy
 
 ```typescript
 // A matter can have sub-matters (e.g. a corporate reorganization with sub-files)
@@ -100,7 +110,7 @@ const hierarchy = await prisma.$queryRaw<MatterNode[]>`
 `;
 ```
 
-## ❌ Incorrect: Raw SQL for Something Prisma Handles Fine
+## Incorrect: Raw SQL for Something Prisma Handles Fine
 
 ```typescript
 // No reason for raw SQL here

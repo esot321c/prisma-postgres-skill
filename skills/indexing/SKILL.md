@@ -1,3 +1,12 @@
+---
+name: indexing
+description: >
+  PostgreSQL indexing patterns and Prisma's limitations. Use when adding indexes,
+  diagnosing slow queries, dealing with N+1 problems, or needing partial, expression,
+  GiST, or BRIN indexes. Triggers on "index", "@@index", "performance", "slow query",
+  "EXPLAIN", "N+1", "partial index", "GIN", "GiST", "BRIN".
+---
+
 # Indexing & Query Performance
 
 ## Rules
@@ -80,7 +89,7 @@ const results = await prisma.$queryRaw<ClientWithMatters[]>`
 `;
 ```
 
-## ✅ Correct
+## Correct
 
 ```prisma
 model Matter {
@@ -105,7 +114,7 @@ CREATE INDEX idx_matters_active_by_client ON matters(client_id, created_at)
   WHERE deleted_at IS NULL;
 ```
 
-## ❌ Incorrect
+## Incorrect
 
 ```prisma
 model Matter {

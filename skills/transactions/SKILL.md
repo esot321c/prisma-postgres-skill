@@ -1,3 +1,12 @@
+---
+name: transactions
+description: >
+  Prisma transaction and bulk operation patterns. Use when writing transactions,
+  choosing interactive vs sequential, bulk creates with relations, bulk upserts,
+  or conditional bulk updates. Triggers on "transaction", "$transaction", "bulk",
+  "createMany", "upsert", "batch", "atomicity", "timeout".
+---
+
 # Transaction & Bulk Operation Patterns
 
 ## Rules
@@ -10,7 +19,7 @@
 ## Interactive vs Sequential Transactions
 
 ```typescript
-// ✅ Interactive: second operation depends on first result
+// Interactive: second operation depends on first result
 const matter = await prisma.$transaction(async (tx) => {
   const client = await tx.client.findUniqueOrThrow({
     where: { id: clientId }
@@ -25,7 +34,7 @@ const matter = await prisma.$transaction(async (tx) => {
   });
 }, { timeout: 10_000 });
 
-// ✅ Sequential: independent operations, just need atomicity
+// Sequential: independent operations, just need atomicity
 await prisma.$transaction([
   prisma.matter.update({ where: { id }, data: { status: 'closed' } }),
   prisma.auditLog.create({ data: { matterId: id, action: 'closed' } })
@@ -35,13 +44,13 @@ await prisma.$transaction([
 ## Bulk Create with Relations
 
 ```typescript
-// ❌ createMany: no relations, returns only count
+// WRONG: createMany — no relations, returns only count
 const result = await prisma.matter.createMany({
   data: matters // if these have nested documents, they're silently dropped
 });
 // result = { count: 10 }, no records returned
 
-// ✅ Loop inside a transaction when you need relations
+// CORRECT: Loop inside a transaction when you need relations
 const created = await prisma.$transaction(async (tx) => {
   return Promise.all(
     intakeItems.map((item) =>
@@ -68,7 +77,7 @@ For large batches (hundreds of rows) where you don't need relations, `createMany
 Prisma's `upsert` runs one query per row. For upserting many rows, use raw SQL:
 
 ```typescript
-// ❌ N queries for N rows
+// WRONG: N queries for N rows
 for (const contact of contacts) {
   await prisma.contact.upsert({
     where: { email: contact.email },
@@ -77,7 +86,7 @@ for (const contact of contacts) {
   });
 }
 
-// ✅ Single query via raw SQL
+// CORRECT: Single query via raw SQL
 await prisma.$queryRaw`
   INSERT INTO contacts (id, email, name, created_at, updated_at)
   VALUES ${Prisma.join(
@@ -97,12 +106,12 @@ await prisma.$queryRaw`
 Prisma's `updateMany` applies the same data to all matched rows. For per-row conditional updates, use raw SQL:
 
 ```typescript
-// ❌ Prisma: one query per status change
+// WRONG: one query per status change
 await prisma.matter.updateMany({ where: { status: 'review' }, data: { status: 'approved' } });
 await prisma.matter.updateMany({ where: { status: 'draft' }, data: { status: 'review' } });
 // Two queries, and no way to set different values per row in one pass
 
-// ✅ Single query with CASE
+// CORRECT: Single query with CASE
 await prisma.$queryRaw`
   UPDATE matters
   SET status = CASE

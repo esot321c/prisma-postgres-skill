@@ -1,3 +1,12 @@
+---
+name: migration-safety
+description: >
+  Safe Prisma migration workflows for PostgreSQL. Use when planning or running
+  prisma migrate, adding columns to existing tables, creating indexes on large tables,
+  or making constraint changes. Triggers on "migrate", "migration", "prisma migrate",
+  "--create-only", "ALTER TABLE", "NOT NULL", "CONCURRENTLY", "rollback", "deploy".
+---
+
 # Migration Safety
 
 ## Rules
@@ -81,7 +90,7 @@ ALTER TABLE matters VALIDATE CONSTRAINT chk_total_positive;
 - For additive-only migrations (new tables, new nullable columns), rollback is rarely needed.
 - For column drops or type changes, keep a backup of the column data before applying.
 
-## ✅ Correct
+## Correct
 
 ```
 migrations/
@@ -94,7 +103,7 @@ migrations/
     migration.sql          # ALTER TABLE ALTER COLUMN reference_number SET NOT NULL
 ```
 
-## ❌ Incorrect
+## Incorrect
 
 ```
 migrations/
