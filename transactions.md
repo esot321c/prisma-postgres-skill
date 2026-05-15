@@ -1,0 +1,125 @@
+# Transaction & Bulk Operation Patterns
+
+## Rules
+
+- Use interactive transactions (`prisma.$transaction(async (tx) => {...})`) when operations depend on each other's results. Use sequential transactions (`prisma.$transaction([op1, op2])`) only for independent operations that just need atomicity.
+- Set explicit timeouts on interactive transactions. The default is 5 seconds, which is too short for bulk operations and too generous for simple writes.
+- Do not use `createMany` when you need created records returned or when the records have nested relations. `createMany` returns only a count and skips relation creation.
+- For bulk upserts that need per-row conditions, use `$queryRaw` with `INSERT ... ON CONFLICT`. Prisma's `upsert` executes one query per row.
+
+## Interactive vs Sequential Transactions
+
+```typescript
+// ✅ Interactive: second operation depends on first result
+const matter = await prisma.$transaction(async (tx) => {
+  const client = await tx.client.findUniqueOrThrow({
+    where: { id: clientId }
+  });
+
+  return tx.matter.create({
+    data: {
+      clientId: client.id,
+      title,
+      referenceNumber: `${client.slug}-${Date.now()}`
+    }
+  });
+}, { timeout: 10_000 });
+
+// ✅ Sequential: independent operations, just need atomicity
+await prisma.$transaction([
+  prisma.matter.update({ where: { id }, data: { status: 'closed' } }),
+  prisma.auditLog.create({ data: { matterId: id, action: 'closed' } })
+]);
+```
+
+## Bulk Create with Relations
+
+```typescript
+// ❌ createMany: no relations, returns only count
+const result = await prisma.matter.createMany({
+  data: matters // if these have nested documents, they're silently dropped
+});
+// result = { count: 10 }, no records returned
+
+// ✅ Loop inside a transaction when you need relations
+const created = await prisma.$transaction(async (tx) => {
+  return Promise.all(
+    intakeItems.map((item) =>
+      tx.matter.create({
+        data: {
+          clientId: item.clientId,
+          title: item.title,
+          status: 'open',
+          documents: {
+            create: item.documents
+          }
+        },
+        include: { documents: true }
+      })
+    )
+  );
+}, { timeout: 30_000 });
+```
+
+For large batches (hundreds of rows) where you don't need relations, `createMany` is fine. The tradeoff is explicit: speed and simplicity vs relation support and returned data.
+
+## Bulk Upsert
+
+Prisma's `upsert` runs one query per row. For upserting many rows, use raw SQL:
+
+```typescript
+// ❌ N queries for N rows
+for (const contact of contacts) {
+  await prisma.contact.upsert({
+    where: { email: contact.email },
+    update: { name: contact.name, updatedAt: new Date() },
+    create: { email: contact.email, name: contact.name }
+  });
+}
+
+// ✅ Single query via raw SQL
+await prisma.$queryRaw`
+  INSERT INTO contacts (id, email, name, created_at, updated_at)
+  VALUES ${Prisma.join(
+    contacts.map(c =>
+      Prisma.sql`(uuid_generate_v7(), ${c.email}, ${c.name}, NOW(), NOW())`
+    )
+  )}
+  ON CONFLICT (email)
+  DO UPDATE SET
+    name = EXCLUDED.name,
+    updated_at = NOW()
+`;
+```
+
+## Conditional Bulk Updates
+
+Prisma's `updateMany` applies the same data to all matched rows. For per-row conditional updates, use raw SQL:
+
+```typescript
+// ❌ Prisma: one query per status change
+await prisma.matter.updateMany({ where: { status: 'review' }, data: { status: 'approved' } });
+await prisma.matter.updateMany({ where: { status: 'draft' }, data: { status: 'review' } });
+// Two queries, and no way to set different values per row in one pass
+
+// ✅ Single query with CASE
+await prisma.$queryRaw`
+  UPDATE matters
+  SET status = CASE
+    WHEN status = 'draft' THEN 'review'
+    WHEN status = 'review' THEN 'approved'
+    ELSE status
+  END,
+  updated_at = NOW()
+  WHERE status IN ('draft', 'review')
+`;
+```
+
+## Transaction Timeout Guidelines
+
+| Operation | Suggested Timeout |
+|---|---|
+| Single create/update with one relation | Default (5s) |
+| Multi-step workflow (create + audit + notification) | 10_000 |
+| Bulk create/upsert (10-100 rows with relations) | 30_000 |
+| Large data migration or backfill | Do not use interactive transaction. Use batched raw SQL with manual commit points. |

@@ -1,0 +1,79 @@
+# Schema Design Conventions
+
+## Rules
+
+- Always `@@map` models to snake_case table names, `@map` fields to snake_case columns.
+- Always add `@@index` on foreign key fields. Prisma does not create these automatically.
+- Use `@default(dbgenerated("uuid_generate_v7()"))` with `@db.Uuid` for all primary keys. Do not use `@default(uuid())` which generates v4 (random, poor index locality). Do not use CUID or ULID as primary keys (string storage, 26-37 bytes vs 16 bytes for native uuid, no Postgres uuid operations).
+- For user-facing URLs, add a separate `slug String @unique` field. The primary key is an internal concern; display identifiers are a separate field.
+- Auto-increment integer IDs are acceptable only for high-write append-only tables (logs, events) where the 8-byte saving matters at scale.
+- Prefer `String` with application-level validation over Prisma/Postgres enums for most status and category fields. Database enums require a migration to add values; string fields don't.
+- Use a proper relation instead of `Json` type unless the structure is genuinely dynamic and unqueried (e.g. raw webhook payloads, third-party metadata blobs).
+- Every table gets `createdAt` and `updatedAt` with `@map` to snake_case.
+- Soft delete uses `deletedAt DateTime?` not a boolean flag.
+
+## When to Use Database Enums
+
+Use database enums when:
+- The value is a type discriminator (e.g. `entryType` where INVOICE requires a `lineItems` relation and RECEIPT requires an `attachments` relation).
+- The set of values is genuinely fixed and structural.
+
+Use string fields when:
+- Status flows that evolve with business logic.
+- Categories the client might rename or extend.
+- Any value where adding an option shouldn't require a deploy.
+
+## ✅ Correct
+
+```prisma
+model Client {
+  id        String    @id @default(dbgenerated("uuid_generate_v7()")) @db.Uuid
+  email     String    @unique
+  slug      String    @unique // "parr-business-law"
+  name      String
+  matters   Matter[]
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  @@map("clients")
+}
+
+model Matter {
+  id        String    @id @default(dbgenerated("uuid_generate_v7()")) @db.Uuid
+  clientId  String    @map("client_id") @db.Uuid
+  client    Client    @relation(fields: [clientId], references: [id])
+  title     String
+  status    String    @default("open")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  @@index([clientId])
+  @@map("matters")
+}
+```
+
+## ❌ Incorrect
+
+```prisma
+model matter {
+  id        String   @id @default(uuid())
+  client_id String
+  client    Client   @relation(fields: [client_id], references: [id])
+  data      Json     // storing structured matter details as JSON blob
+  status    String   @default("open") // stringly-typed with no app-level validation
+  createdAt DateTime @default(now())
+  // no @@map, no @@index on FK, no updatedAt, uuid v4
+}
+
+// ❌ Database enum for values that will change with business requirements
+enum MatterStatus {
+  OPEN
+  CLOSED
+  ON_HOLD
+  // Need to add UNDER_REVIEW? That's a migration and deploy.
+}
+```
+
+Problems: no `@@map` so Prisma uses model name as table name with inconsistent casing. No `@@index` on FK so every join scans the table. `uuid()` gives v4 (random, poor index locality). `Json` field for data that should be relational. Missing `updatedAt`. Database enum for a status that will evolve.
