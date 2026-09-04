@@ -91,7 +91,7 @@ await prisma.$queryRaw`
   INSERT INTO contacts (id, email, name, created_at, updated_at)
   VALUES ${Prisma.join(
     contacts.map(c =>
-      Prisma.sql`(uuid_generate_v7(), ${c.email}, ${c.name}, NOW(), NOW())`
+      Prisma.sql`(uuidv7(), ${c.email}, ${c.name}, NOW(), NOW())`
     )
   )}
   ON CONFLICT (email)

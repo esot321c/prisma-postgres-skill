@@ -13,7 +13,7 @@ description: >
 
 - Always `@@map` models to snake_case table names, `@map` fields to snake_case columns.
 - Always add `@@index` on foreign key fields. Prisma does not create these automatically.
-- Use `@default(dbgenerated("uuid_generate_v7()"))` with `@db.Uuid` for all primary keys. Do not use `@default(uuid())` which generates v4 (random, poor index locality). Do not use CUID or ULID as primary keys (string storage, 26-37 bytes vs 16 bytes for native uuid, no Postgres uuid operations).
+- Use `@default(dbgenerated("uuidv7()"))` with `@db.Uuid` for all primary keys (native on PostgreSQL 18+; on 17 and below use `uuid_generate_v7()` from the `pg_uuidv7` extension). Do not use `@default(uuid())` which generates v4 (random, poor index locality). Do not use CUID or ULID as primary keys (string storage, 26-37 bytes vs 16 bytes for native uuid, no Postgres uuid operations).
 - For user-facing URLs, add a separate `slug String @unique` field. The primary key is an internal concern; display identifiers are a separate field.
 - Auto-increment integer IDs are acceptable only for high-write append-only tables (logs, events) where the 8-byte saving matters at scale.
 - Prefer `String` with application-level validation over Prisma/Postgres enums for most status and category fields. Database enums require a migration to add values; string fields don't.
@@ -36,7 +36,7 @@ Use string fields when:
 
 ```prisma
 model Client {
-  id        String    @id @default(dbgenerated("uuid_generate_v7()")) @db.Uuid
+  id        String    @id @default(dbgenerated("uuidv7()")) @db.Uuid
   email     String    @unique
   slug      String    @unique // "parr-business-law"
   name      String
@@ -49,7 +49,7 @@ model Client {
 }
 
 model Matter {
-  id        String    @id @default(dbgenerated("uuid_generate_v7()")) @db.Uuid
+  id        String    @id @default(dbgenerated("uuidv7()")) @db.Uuid
   clientId  String    @map("client_id") @db.Uuid
   client    Client    @relation(fields: [clientId], references: [id])
   title     String

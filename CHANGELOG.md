@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.2] - 2026-09-04
+
+### Changed
+
+- UUID v7 guidance updated for PostgreSQL 18: the native `uuidv7()` function is now the primary recommendation; the `pg_uuidv7` extension is documented as the fallback for PostgreSQL 17 and below
+- Schema examples across skills switched from `uuid_generate_v7()` to `uuidv7()`
+- Initial setup behavior now determines the Postgres major version before choosing the ID default
+
 ## [1.0.1] - 2026-05-15
 
 ### Fixed

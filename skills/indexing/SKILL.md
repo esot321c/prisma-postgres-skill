@@ -93,7 +93,7 @@ const results = await prisma.$queryRaw<ClientWithMatters[]>`
 
 ```prisma
 model Matter {
-  id        String    @id @default(dbgenerated("uuid_generate_v7()")) @db.Uuid
+  id        String    @id @default(dbgenerated("uuidv7()")) @db.Uuid
   clientId  String    @map("client_id") @db.Uuid
   client    Client    @relation(fields: [clientId], references: [id])
   status    String    @default("open")

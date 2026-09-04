@@ -108,13 +108,13 @@ git clone https://github.com/esot321c/opinionated-prisma.git .claude/skills/opin
 
 ## Prerequisites
 
-Self-hosted PostgreSQL with the `pg_uuidv7` extension. See the `opinionated-prisma` skill for setup instructions including Docker Compose configuration.
+Self-hosted PostgreSQL. On PostgreSQL 18+, UUID v7 is built in (`uuidv7()`); on 17 and below, the `pg_uuidv7` extension is required. See the `opinionated-prisma` skill for setup instructions including Docker Compose configuration.
 
 ## Opinions
 
 This plugin makes these decisions rather than presenting options:
 
-- UUID v7 via `pg_uuidv7`, not v4/CUID/ULID
+- UUID v7 (native `uuidv7()` on PostgreSQL 18+, `pg_uuidv7` extension on 17 and below), not v4/CUID/ULID
 - String fields for status/category, database enums only for type discriminators
 - Slugs for user-facing URLs, UUIDs for internal keys
 - `@@map` and `@map` to snake_case on every model and field

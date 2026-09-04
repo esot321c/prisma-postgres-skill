@@ -28,10 +28,18 @@ Invoke the specific skill via the Skill tool when the task narrows to one of the
 
 ### UUID v7 Support
 
-This plugin assumes UUID v7 as the default primary key strategy. This requires the
-`pg_uuidv7` extension.
+This plugin assumes UUID v7 as the default primary key strategy.
 
-Add to your Postgres initialization:
+**PostgreSQL 18+** supports UUID v7 natively via the built-in `uuidv7()` function.
+No extension, no init script. Prefer Postgres 18 for greenfield projects:
+
+```prisma
+id String @id @default(dbgenerated("uuidv7()")) @db.Uuid
+```
+
+**PostgreSQL 17 and below** require the `pg_uuidv7` extension, which provides the
+same capability under the name `uuid_generate_v7()`. Add to your Postgres
+initialization:
 
 ```sql
 -- init.sql
@@ -52,16 +60,20 @@ Then in Prisma schemas, use:
 id String @id @default(dbgenerated("uuid_generate_v7()")) @db.Uuid
 ```
 
-If you are on managed Postgres that does not support `pg_uuidv7`, fall back to
-`gen_random_uuid()` (v4) and accept the index locality tradeoff. Do not use CUID
+If you are on managed Postgres below 18 that does not allow `pg_uuidv7`, fall back
+to `gen_random_uuid()` (v4) and accept the index locality tradeoff. Do not use CUID
 or ULID as a workaround.
+
+Examples throughout these skills use the native `uuidv7()`; substitute
+`uuid_generate_v7()` on Postgres 17 and below.
 
 ## Initial Setup Behavior
 
 When first working with a project's database:
 
 1. Check for an existing `prisma.schema` (or `schema.prisma`) and `docker-compose.yml`
-2. If `pg_uuidv7` is already configured, follow UUID v7 patterns throughout
-3. If Postgres is self-hosted (Docker, bare metal) but `pg_uuidv7` is missing, add it and note the change
-4. If Postgres is managed and extensions are restricted, fall back to v4 and document the tradeoff in a schema comment
-5. Once the ID strategy is established for a project, use it consistently. Do not mix strategies.
+2. Determine the Postgres major version (`SELECT version();`, or the image tag in `docker-compose.yml`)
+3. On Postgres 18+, use native `uuidv7()`. An existing project already on `pg_uuidv7` keeps working — don't churn it — but new schemas use the built-in
+4. On Postgres 17 or below, self-hosted (Docker, bare metal): add the `pg_uuidv7` extension if missing, note the change, and use `uuid_generate_v7()`
+5. On managed Postgres 17 or below with restricted extensions, fall back to v4 and document the tradeoff in a schema comment
+6. Once the ID strategy is established for a project, use it consistently. Do not mix strategies.
